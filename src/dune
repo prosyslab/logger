@@ -1,0 +1,4 @@
+(library
+ (public_name logger)
+ (libraries unix)
+ (flags -w +32+34))
