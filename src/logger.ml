@@ -2,7 +2,6 @@ module F = Format
 module P = Printf
 
 let log_channel = ref None
-
 let log_formatter = ref None
 
 let from_channel oc =
@@ -23,10 +22,24 @@ let string_of_current_time () =
 let log fmt =
   match !log_formatter with
   | Some log_formatter ->
-      F.fprintf log_formatter "[%s] " (string_of_current_time ());
+      F.fprintf log_formatter "[%s][Log] " (string_of_current_time ());
       F.kfprintf
         (fun log_formatter ->
           F.fprintf log_formatter "\n";
           F.pp_print_flush log_formatter ())
+        log_formatter fmt
+  | None -> failwith "Cannot open logfile"
+
+let error fmt =
+  match !log_formatter with
+  | Some log_formatter ->
+      let backtrace = Printexc.get_raw_backtrace () in
+      F.fprintf log_formatter "[%s][Error] " (string_of_current_time ());
+      F.kfprintf
+        (fun log_formatter ->
+          F.fprintf log_formatter "%s"
+            (Printexc.raw_backtrace_to_string backtrace);
+          F.pp_print_flush log_formatter ();
+          exit 1)
         log_formatter fmt
   | None -> failwith "Cannot open logfile"
