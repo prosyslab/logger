@@ -35,11 +35,10 @@ let error fmt =
   | Some log_formatter ->
       let backtrace = Printexc.get_raw_backtrace () in
       F.fprintf log_formatter "[%s][Error] " (string_of_current_time ());
-      F.kfprintf
-        (fun log_formatter ->
-          F.fprintf log_formatter "%s"
+      F.kasprintf
+        (fun msg ->
+          F.fprintf log_formatter "%s@\n%s@." msg
             (Printexc.raw_backtrace_to_string backtrace);
-          F.pp_print_flush log_formatter ();
           exit 1)
-        log_formatter fmt
+        fmt
   | None -> failwith "Cannot open logfile"
