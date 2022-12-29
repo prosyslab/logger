@@ -22,7 +22,20 @@ let string_of_current_time () =
 let log fmt =
   match !log_formatter with
   | Some log_formatter ->
-      F.fprintf log_formatter "[%s][Log] " (string_of_current_time ());
+      F.fprintf log_formatter "[%s][Info] " (string_of_current_time ());
+      F.kfprintf
+        (fun log_formatter ->
+          F.fprintf log_formatter "\n";
+          F.pp_print_flush log_formatter ())
+        log_formatter fmt
+  | None -> failwith "Cannot open logfile"
+
+let info = log
+
+let warn fmt =
+  match !log_formatter with
+  | Some log_formatter ->
+      F.fprintf log_formatter "[%s][Warn] " (string_of_current_time ());
       F.kfprintf
         (fun log_formatter ->
           F.fprintf log_formatter "\n";
