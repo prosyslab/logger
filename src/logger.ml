@@ -106,6 +106,7 @@ let log to_consol lv =
   | Some _ -> F.ifprintf F.err_formatter
   | None -> failwith "Cannot open logfile"
 
+let debug ?(to_consol = false) = log to_consol DEBUG
 let info ?(to_consol = false) = log to_consol INFO
 let warn ?(to_consol = false) = log to_consol WARN
 
