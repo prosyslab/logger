@@ -89,32 +89,34 @@ let compare_level set_level level =
       true
   | _, _ -> false
 
-let log to_consol lv =
+let log to_console new_line lv =
   match !log_formatter with
   | Some log_formatter when compare_level !level lv ->
       let formatter =
-        if to_consol then log_formatter.dual else log_formatter.file
+        if to_console then log_formatter.dual else log_formatter.file
       in
       F.fprintf formatter "[%s][%s] "
         (string_of_current_time ())
         (string_of_level !level);
       F.kfprintf
         (fun log_formatter ->
-          F.fprintf log_formatter "\n";
+          if new_line then F.fprintf log_formatter "\n";
           F.pp_print_flush log_formatter ())
         formatter
   | Some _ -> F.ifprintf F.err_formatter
   | None -> failwith "Cannot open logfile"
 
-let debug ?(to_consol = false) = log to_consol DEBUG
-let info ?(to_consol = false) = log to_consol INFO
-let warn ?(to_consol = false) = log to_consol WARN
+let debug ?(to_console = false) ?(new_line = true) =
+  log to_console new_line DEBUG
 
-let error ?(to_consol = false) fmt =
+let info ?(to_console = false) ?(new_line = true) = log to_console new_line INFO
+let warn ?(to_console = false) ?(new_line = true) = log to_console new_line WARN
+
+let error ?(to_console = false) fmt =
   match !log_formatter with
   | Some log_formatter ->
       let formatter =
-        if to_consol then log_formatter.dual else log_formatter.file
+        if to_console then log_formatter.dual else log_formatter.file
       in
       let backtrace = Printexc.get_raw_backtrace () in
       F.fprintf formatter "[%s][ERROR] " (string_of_current_time ());
