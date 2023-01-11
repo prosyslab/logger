@@ -97,7 +97,7 @@ let log to_console new_line lv =
       in
       F.fprintf formatter "[%s][%s] "
         (string_of_current_time ())
-        (string_of_level !level);
+        (string_of_level lv);
       F.kfprintf
         (fun log_formatter ->
           if new_line then F.fprintf log_formatter "\n";
