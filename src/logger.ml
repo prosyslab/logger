@@ -112,7 +112,7 @@ let debug ?(to_console = false) ?(new_line = true) =
 let info ?(to_console = false) ?(new_line = true) = log to_console new_line INFO
 let warn ?(to_console = false) ?(new_line = true) = log to_console new_line WARN
 
-let error ?(to_console = false) fmt =
+let error ?(to_console = true) fmt =
   match !log_formatter with
   | Some log_formatter ->
       let formatter =
