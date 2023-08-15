@@ -1,7 +1,7 @@
 type level = DEBUG | INFO | WARN | ERROR
 
-val from_channel : out_channel -> unit
-val from_file : string -> unit
+val from_channel : ?console_fmt:Format.formatter -> out_channel -> unit
+val from_file : ?console_fmt:Format.formatter -> string -> unit
 val set_level : level -> unit
 val flush : unit -> unit
 val finalize : unit -> unit

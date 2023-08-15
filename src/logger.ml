@@ -45,16 +45,16 @@ let dual_formatter fmt1 fmt2 =
     };
   fmt
 
-let from_channel oc =
+let from_channel ?(console_fmt = F.err_formatter) oc =
   let log_file_fmt = F.formatter_of_out_channel oc in
-  let log_dual_fmt = dual_formatter log_file_fmt F.err_formatter in
+  let log_dual_fmt = dual_formatter log_file_fmt console_fmt in
   log_formatter := Some { file = log_file_fmt; dual = log_dual_fmt }
 
-let from_file filename =
+let from_file ?(console_fmt = F.err_formatter) filename =
   let oc = open_out filename in
   log_channel := Some oc;
   let log_file_fmt = F.formatter_of_out_channel oc in
-  let log_dual_fmt = dual_formatter log_file_fmt F.err_formatter in
+  let log_dual_fmt = dual_formatter log_file_fmt console_fmt in
   log_formatter := Some { file = log_file_fmt; dual = log_dual_fmt }
 
 let finalize () = match !log_channel with Some oc -> close_out oc | None -> ()
@@ -92,12 +92,12 @@ let compare_level set_level level =
 let log to_console new_line lv =
   match !log_formatter with
   | Some log_formatter when compare_level !level lv ->
+      F.fprintf log_formatter.file "[%s][%s] "
+        (string_of_current_time ())
+        (string_of_level lv);
       let formatter =
         if to_console then log_formatter.dual else log_formatter.file
       in
-      F.fprintf formatter "[%s][%s] "
-        (string_of_current_time ())
-        (string_of_level lv);
       F.kfprintf
         (fun log_formatter ->
           if new_line then F.fprintf log_formatter "\n";
@@ -115,11 +115,11 @@ let warn ?(to_console = false) ?(new_line = true) = log to_console new_line WARN
 let error ?(to_console = true) fmt =
   match !log_formatter with
   | Some log_formatter ->
+      F.fprintf log_formatter.file "[%s][ERROR] " (string_of_current_time ());
       let formatter =
         if to_console then log_formatter.dual else log_formatter.file
       in
       let backtrace = Printexc.get_raw_backtrace () in
-      F.fprintf formatter "[%s][ERROR] " (string_of_current_time ());
       F.kasprintf
         (fun msg ->
           F.fprintf formatter "%s@\n%s@." msg
