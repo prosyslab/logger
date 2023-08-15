@@ -92,7 +92,7 @@ let compare_level set_level level =
 let log to_console new_line lv =
   match !log_formatter with
   | Some log_formatter when compare_level !level lv ->
-      F.fprintf log_formatter.file "[%s][%s] "
+      F.fprintf log_formatter.file "[%s][%s] @?"
         (string_of_current_time ())
         (string_of_level lv);
       let formatter =
@@ -100,7 +100,7 @@ let log to_console new_line lv =
       in
       F.kfprintf
         (fun log_formatter ->
-          if new_line then F.fprintf log_formatter "\n";
+          if new_line then F.fprintf log_formatter "@.";
           F.pp_print_flush log_formatter ())
         formatter
   | Some _ -> F.ifprintf F.err_formatter
@@ -115,7 +115,7 @@ let warn ?(to_console = false) ?(new_line = true) = log to_console new_line WARN
 let error ?(to_console = true) fmt =
   match !log_formatter with
   | Some log_formatter ->
-      F.fprintf log_formatter.file "[%s][ERROR] " (string_of_current_time ());
+      F.fprintf log_formatter.file "[%s][ERROR] @?" (string_of_current_time ());
       let formatter =
         if to_console then log_formatter.dual else log_formatter.file
       in

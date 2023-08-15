@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "logger"
-version: "v20230815"
+version: "v20230816"
 synopsis: "simple logger"
 maintainer: "Programming Systems Laboratory, KAIST"
 authors: "Programming Systems Laboratory, KAIST"
