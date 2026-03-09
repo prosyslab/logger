@@ -119,7 +119,7 @@ let error ?(to_console = true) fmt =
       let formatter =
         if to_console then log_formatter.dual else log_formatter.file
       in
-      let backtrace = Printexc.get_raw_backtrace () in
+      let backtrace = Printexc.get_callstack 100 in
       F.kasprintf
         (fun msg ->
           F.fprintf formatter "%s@\n%s@." msg

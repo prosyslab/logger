@@ -1,4 +1,9 @@
 (executable
- (name example)
- (modules example)
+ (name example1)
+ (modules example1)
+ (libraries logger))
+
+(executable
+ (name example2)
+ (modules example2)
  (libraries logger))

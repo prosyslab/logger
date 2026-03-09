@@ -11,8 +11,10 @@ all:
 
 .PHONY: test
 test:
-	$(DUNE) build test/example.exe
-	$(LN) -sf _build/default/test/example.exe .
+	$(DUNE) build test/example1.exe
+	$(LN) -sf _build/default/test/example1.exe .
+	$(DUNE) build test/example2.exe
+	$(LN) -sf _build/default/test/example2.exe .
 
 install:
 	$(DUNE) install

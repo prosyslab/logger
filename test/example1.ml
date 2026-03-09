@@ -6,6 +6,7 @@ let main () =
   L.info "Hello, %s!" "World";
   L.info ~to_console:true "Hello, %s!" "World";
   L.info ~to_console:true ~new_line:false "1\r";
-  L.info ~to_console:true ~new_line:false "2\n"
+  L.info ~to_console:true ~new_line:false "2\n";
+  L.error "An error occurred: %s" "Something went wrong"
 
 let _ = main ()
